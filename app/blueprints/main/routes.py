@@ -1,4 +1,4 @@
-from . import main
+from .app.blueprints.main import main
 from flask import Flask, request, render_template, jsonify, redirect, url_for
 import requests
 from app import Gym, query_gym, db, app, login, login_manager
