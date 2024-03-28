@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+
+{%block title%}
+    Gym Search
+{%endblock%}
+
+{%block content%}
+
+<form method="POST">
+    <div class="mb-3">
+      <label for="name" class="form-label">Search</label>
+      <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+  {% if gym %}
+  <div class="card" style="width: 18rem;">
+    <img src="{{gym.photo_reference}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-name">{{gym.name}}</h5>
+      <p class="card-text">Gym Info</p>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">{{gym.address}}</li>
+        <li class="list-group-item">{{gym.hours}}</li>
+        <li class="list-group-item">{{gym.phone}}</li>
+      </ul>
+      <a href="{{url_for('main.catch_pokemon', name=pokemon.name)}}" class="btn btn-primary">Catch</a>
+    </div>
+  </div>
+
+  {%endif%}
+
+{%endblock%}
