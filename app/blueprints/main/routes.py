@@ -1,8 +1,9 @@
-from .app.blueprints.main import main
-from flask import Flask, request, render_template, jsonify, redirect, url_for
+from app.blueprints.main import main
+from flask import request, render_template, redirect, url_for
 import requests
-from app import Gym, query_gym, db, app, login, login_manager
-from flask_login import current_user, logout_user, login_required
+from app import db
+from flask_login import current_user, login_required
+from app.models import Gym
 
 
 google_places_api_key = 'AIzaSyAx4rIxHCzyy8AtTBdrbA5NL1VL57pSJ4E'
@@ -46,8 +47,15 @@ def search(gym):
 @main.route('/gymsearch', methods=['GET', 'POST'])
 def GymSearch():
     if request.method == 'POST':
-        gym = request.form.get('gym').lower()
-        
+        name = request.form.get('name').lower()
+
+        query_gym = Gym.query.filter_by(name=name).first()
+        if query_gym:
+            return render_template('gymsearch.html', gym=query_gym)
+        gym = search(name)
+        new_gym = Gym(name, gym['address'], gym['hours'], gym['phone'], gym['photo_reference'])
+        new_gym.save()
+        return render_template('gymsearch.html', gyms=gym)
     else:
         return render_template('gymsearch.html')
     
@@ -57,7 +65,7 @@ def GymSearch():
 def add_gym(name):
     print(name)
     gym = Gym.query.filter_by(name=gym).first()
-    if len(current_user.gyms.all()) < 5 and query_gym not in current_user.gyms.all():
+    if len(current_user.gyms.all()) < 5 and gym not in current_user.gyms.all():
         current_user.gyms.append(gym)
         db.session.commit()
         return redirect(url_for('main.gyms'))

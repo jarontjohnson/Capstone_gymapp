@@ -1,21 +1,15 @@
-{%extends 'base.html'%}
+{%extends "base.html"%}
 
 {%block title%}
-    Gym Search
+ Pokeapi
 {%endblock%}
 
 {%block content%}
 {%include "includes/nav.html"%}
-<div class="flex-container-2">
-<form method="POST">
-    <div class="mb-3">
-      <label for="name" class="form-label">Find a Gym</label>
-      <input type="text" class="form-control" id="name" name="name">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+<div class="flex-container">
+
 </div>
-  {% if gym %}
+  {% for gym in gyms %}
   <div class="card" style="width: 18rem;">
     <img src="{{gym.photo_reference}}" class="card-img-top" alt="...">
     <div class="card-body">
@@ -26,10 +20,10 @@
         <li class="list-group-item">{{gym.hours}}</li>
         <li class="list-group-item">{{gym.phone}}</li>
       </ul>
-      <a href="{{url_for('main.add_gym', name=gym.name)}}" class="btn btn-primary">Add Gym</a>
+      <a href="{{url_for('main.remove_gym', name=gym.name)}}" class="btn btn-primary">Remove Gym</a>
     </div>
   </div>
 
-  {%endif%}
+  {%endfor%}
 
 {%endblock%}

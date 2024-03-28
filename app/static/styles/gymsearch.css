@@ -1,0 +1,12 @@
+body{
+    background: #5e1313;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #b27171, #cacaca);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #b27171, #cacaca); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    height: 100vh;
+}
+
+.flex-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
