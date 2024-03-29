@@ -69,3 +69,18 @@ def add_gym(name):
         current_user.gyms.append(gym)
         db.session.commit()
         return redirect(url_for('main.gyms'))
+
+@main.route('/gyms')
+@login_required
+def gyms():
+    return render_template('main.gyms', gyms=current_user.gyms.all())
+
+@main.route('/remove_gym/<name>', methods=['GET', 'POST'])
+@login_required
+def remove_gym(name):
+    gym = Gym.query.filter_by(name=name).first()
+    if gym in current_user.gyms.all():
+        current_user.gyms.remove(gym)
+        db.session.commit()
+        return redirect(url_for('main.gyms'))
+    

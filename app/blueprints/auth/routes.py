@@ -32,7 +32,7 @@ def login():
         if queried_user and check_password_hash(queried_user.password, password):
             flash(f'Welcome {queried_user.username}!', 'info')
             login_user(queried_user)
-            return redirect(url_for('main.home'))
+            return redirect(url_for('main.gyms'))
         else: 
             flash('incorrect username, email or password....please try again', 'warning')
         return render_template("login.html", form=form)
@@ -43,4 +43,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('main.gyms'))

@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    team = db.relationship('Gym', secondary=gyms, backref="owner", lazy="dynamic")
+    gyms = db.relationship('Gym', secondary=gyms, backref="users", lazy="dynamic")
     
     def __init__(self, username, email, password):
         self.username = username
@@ -28,13 +28,11 @@ class User(db.Model, UserMixin):
 class Gym(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    hp = db.Column(db.String, nullable=False)
-    defense = db.Column(db.String, nullable=False)
-    attack = db.Column(db.String, nullable=False)
-    ability = db.Column(db.String, nullable=False)
-    base_experience = db.Column(db.String, nullable=False)
-    sprite = db.Column(db.String, nullable=False)
-    team = db.relationship('Gym', secondary=gyms, backref="owner", lazy="dynamic")
+    address = db.Column(db.String, nullable=False)
+    hours = db.Column(db.String, nullable=False)
+    phone = db.Column(db.String, nullable=False)
+    photo_reference = db.Column(db.String, nullable=False)
+    gyms = db.relationship('Gym', secondary=gyms, backref="gem", lazy="dynamic")
 
     def __init__(self, name, address, hours, phone, photo_reference):
         self.name = name
