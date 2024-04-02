@@ -30,7 +30,7 @@ class Gym(db.Model):
     name = db.Column(db.String, nullable=False)
     address = db.Column(db.String, nullable=False)
     hours = db.Column(db.String, nullable=False)
-    phone = db.Column(db.String, nullable=False)
+    # phone = db.Column(db.String, nullable=False)
     photo_reference = db.Column(db.String, nullable=False)
     gyms = db.relationship('Gym', secondary=gyms, backref="gem", lazy="dynamic")
 

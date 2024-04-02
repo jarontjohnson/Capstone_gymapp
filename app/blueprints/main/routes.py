@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from app.models import Gym
 
 
-google_places_api_key = 'AIzaSyAx4rIxHCzyy8AtTBdrbA5NL1VL57pSJ4E'
+API_KEY = 'AIzaSyBwyu5uGGOf2N3McdwS68EJAWaGDHK6tko'
 
 @main.route('/')
 def alpha_app():
@@ -27,10 +27,10 @@ def login():
 
 def search(gym):
     query = request.form.get('query')
-    url = f'https://maps.googleapis.com/maps/api/place/textsearch/json?key={google_places_api_key}&query={query}+gym'
+    url = f'https://maps.googleapis.com/maps/api/place/textsearch/json?key={API_KEY}&query={query}+gym'
     response = requests.get(url)
     data = response.json()
-    
+    print(data)
     gyms = []
     for result in data.get('results', []):
         gym = {
@@ -64,7 +64,7 @@ def GymSearch():
 @login_required
 def add_gym(name):
     print(name)
-    gym = Gym.query.filter_by(name=gym).first()
+    gym = Gym.query.filter_by(name=name).first()
     if len(current_user.gyms.all()) < 5 and gym not in current_user.gyms.all():
         current_user.gyms.append(gym)
         db.session.commit()
@@ -73,7 +73,7 @@ def add_gym(name):
 @main.route('/gyms')
 @login_required
 def gyms():
-    return render_template('main.gyms', gyms=current_user.gyms.all())
+    return render_template('gyms.html', gyms=current_user.gyms.all())
 
 @main.route('/remove_gym/<name>', methods=['GET', 'POST'])
 @login_required
