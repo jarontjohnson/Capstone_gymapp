@@ -1,0 +1,29 @@
+{%extends "base.html"%}
+
+{%block title%}
+  Workouts
+{%endblock%}
+
+{%block content%}
+{%include "includes/nav.html"%}
+<div class="flex-container">
+
+</div>
+  {% for workout in workouts %}
+  <div class="card" style="width: 18rem;">
+    <img src="{{gym.photo_reference}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-name">{{workout.name}}</h5>
+      <p class="card-text">Workout Info</p>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">{{workout.name}}</li>
+        <li class="list-group-item">{{workout.body_part}}</li>
+        <li class="list-group-item">{{workout.instructions}}</li>
+      </ul>
+      <a href="{{url_for('main.remove_workout', name=workout.name)}}" class="btn btn-primary">Remove Workout</a>
+    </div>
+  </div>
+
+  {%endfor%}
+
+{%endblock%}

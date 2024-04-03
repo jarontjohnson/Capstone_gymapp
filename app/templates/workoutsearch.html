@@ -1,0 +1,35 @@
+{%extends 'base.html'%}
+
+{%block title%}
+  Workout Search
+{%endblock%}
+
+{%block content%}
+{%include "includes/nav.html"%}
+<div class="flex-container-2">
+<form method="POST">
+    <div class="mb-3">
+      <label for="name" class="form-label">Search a workout by body part</label>
+      <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+  {% if workout %}
+  <div class="card" style="width: 18rem;">
+    <img src="{{gym.photo_reference}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-name">{{workout.name}}</h5>
+      <p class="card-text">Workout Info</p>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">{{workout.name}}</li>
+        <li class="list-group-item">{{workout.body_part}}</li>
+        <li class="list-group-item">{{workout.instructions}}</li>
+      </ul>
+      <a href="{{url_for('main.add_workout', name=workout.name)}}" class="btn btn-primary">Add to Workout Plan</a>
+    </div>
+  </div>
+
+  {%endif%}
+
+{%endblock%}

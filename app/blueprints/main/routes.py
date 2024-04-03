@@ -1,12 +1,22 @@
 from app.blueprints.main import main
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template, redirect, url_for, jsonify
 import requests
 from app import db
 from flask_login import current_user, login_required
-from app.models import Gym
+from app.models import User
 
 
-API_KEY = 'AIzaSyBwyu5uGGOf2N3McdwS68EJAWaGDHK6tko'
+
+url = "https://gym-fit.p.rapidapi.com/exercises/search"
+
+headers = {
+	"X-RapidAPI-Key": "a6cd4199afmshef2cb6b483c6115p14bd76jsn974ac5d50912",
+	"X-RapidAPI-Host": "gym-fit.p.rapidapi.com"
+}
+
+response = requests.get(url, headers=headers)
+
+print(response.json())
 
 @main.route('/')
 def alpha_app():
@@ -25,62 +35,121 @@ def login():
     else:
         return render_template('login.html')
 
-def search(gym):
-    query = request.form.get('query')
-    url = f'https://maps.googleapis.com/maps/api/place/textsearch/json?key={API_KEY}&query={query}+gym'
-    response = requests.get(url)
-    data = response.json()
-    print(data)
-    gyms = []
-    for result in data.get('results', []):
-        gym = {
-            'name': result.get('name'),
-            'address': result.get('formatted_address'),
-            'hours': result.get('opening_hours', {}).get('weekday_text', []),
-            'phone': result.get('formatted_phone_number'),
-            'photo_reference': result.get('photos', [])[0].get('photo_reference') if result.get('photos') else None
-        }
-        return gym
-    else:
-        return gyms.append
+# def search(gym):
+#     query = request.form.get('query')
+#     url = f'https://maps.googleapis.com/maps/api/place/textsearch/json?key={API_KEY}&query={query}+gym'
+#     response = requests.get(url)
+#     data = response.json()
+#     print(data)
+#     gyms = []
+#     for result in data.get('results', []):
+#         gym = {
+#             'name': result.get('name'),
+#             'address': result.get('formatted_address'),
+#             'hours': result.get('opening_hours', {}).get('weekday_text', []),
+#             'phone': result.get('formatted_phone_number'),
+#             'photo_reference': result.get('photos', [])[0].get('photo_reference') if result.get('photos') else None
+#         }
+#         return gym
+#     else:
+#         return gyms.append
 
-@main.route('/gymsearch', methods=['GET', 'POST'])
-def GymSearch():
+# @main.route('/gymsearch', methods=['GET', 'POST'])
+# def GymSearch():
+#     if request.method == 'POST':
+#         name = request.form.get('name').lower()
+
+#         query_gym = Gym.query.filter_by(name=name).first()
+#         if query_gym:
+#             return render_template('gymsearch.html', gym=query_gym)
+#         gym = search(name)
+#         new_gym = Gym(name, gym['address'], gym['hours'], gym['phone'], gym['photo_reference'])
+#         new_gym.save()
+#         return render_template('gymsearch.html', gyms=gym)
+#     else:
+#         return render_template('gymsearch.html')
+
+# @main.route('/exercises', methods=['GET', 'POST'])
+def get_exercises(exercises):
+    url = "https://gym-fit.p.rapidapi.com/exercises/search"
+    headers = {
+        "X-RapidAPI-Key": "a6cd4199afmshef2cb6b483c6115p14bd76jsn974ac5d50912",
+        "X-RapidAPI-Host": "gym-fit.p.rapidapi.com"
+    }
+
+    # Make the API request
+    response = requests.get(url, headers=headers)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        data = response.json()
+
+        # Extract relevant information from the response
+        exercises = []
+        for exercise in data['exercises']:
+            exercise_data = {
+                'name': exercise['name'],
+                'body_part': exercise['muscle_group'],
+                'instructions': exercise['instructions']
+            }
+            exercises.append(exercise_data)
+
+        return jsonify(exercises)
+    else:
+        return jsonify({'error': 'Failed to retrieve exercise data'})
+    
+    # @main.route('/exercisesearch', methods=['GET', 'POST'])
+    # def ExerciseSearch():
+    #     if request.method == 'POST':
+    #         body_part = request.form.get('body_part').lower()
+
+    #         query_exercise = Exercise.query.filter_by(body_part=body_part).first()
+    #         if query_exercise:
+    #             return render_template('workoutsearch.html', exercise=query_exercise)
+    #         exercise = get_exercises(name)
+    #         new_exercise = Exercise(name, body_part, exercise['instructions'])
+    #         new_exercise.save()
+    #         return render_template('workoutsearch.html', exercises=exercise)
+    #     else:
+    #         return render_template('workoutsearch.html')
+@main.route('/exercisesearch', methods=['GET', 'POST'])
+def ExerciseSearch():
     if request.method == 'POST':
-        name = request.form.get('name').lower()
+        body_part = request.form.get('body_part')
 
-        query_gym = Gym.query.filter_by(name=name).first()
-        if query_gym:
-            return render_template('gymsearch.html', gym=query_gym)
-        gym = search(name)
-        new_gym = Gym(name, gym['address'], gym['hours'], gym['phone'], gym['photo_reference'])
-        new_gym.save()
-        return render_template('gymsearch.html', gyms=gym)
+        query_exercise = exercise.query.filter_by(body_part=body_part).first()
+        if query_exercise:
+            return render_template('workoutsearch.html', exercise=query_exercise)
+        else:
+            exercise = get_exercises(name)
+            new_exercise = exercise(name, body_part, exercise['instructions'])
+            new_exercise.save()
+            return render_template('workoutsearch.html', exercises=exercise)
     else:
-        return render_template('gymsearch.html')
+        return render_template('workoutsearch.html')
     
     
-@main.route('/add_gym/<name>', methods=['GET', 'POST'])
+@main.route('/add_workout/<name>', methods=['GET', 'POST'])
 @login_required
-def add_gym(name):
+def add_workout(name):
     print(name)
-    gym = Gym.query.filter_by(name=name).first()
-    if len(current_user.gyms.all()) < 5 and gym not in current_user.gyms.all():
-        current_user.gyms.append(gym)
+    workout = workout.query.filter_by(name=name).first()
+    if len(current_user.gyms.all()) < 5 and workout not in current_user.gyms.all():
+        current_user.gyms.append(workout)
         db.session.commit()
-        return redirect(url_for('main.gyms'))
+        return redirect(url_for('main.workouts'))
 
-@main.route('/gyms')
+@main.route('/workouts')
 @login_required
-def gyms():
-    return render_template('gyms.html', gyms=current_user.gyms.all())
+def workouts():
+    return render_template('workouts.html', workouts=current_user.workouts.all())
 
-@main.route('/remove_gym/<name>', methods=['GET', 'POST'])
+@main.route('/remove_workout/<name>', methods=['GET', 'POST'])
 @login_required
-def remove_gym(name):
-    gym = Gym.query.filter_by(name=name).first()
-    if gym in current_user.gyms.all():
-        current_user.gyms.remove(gym)
+def remove_workout(name):
+    workout = workout.query.filter_by(name=name).first()
+    if workout in current_user.workouts.all():
+        current_user.workouts.remove(workout)
         db.session.commit()
-        return redirect(url_for('main.gyms'))
+        return redirect(url_for('main.workouts'))
     
