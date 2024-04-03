@@ -3,7 +3,8 @@ from flask import request, render_template, redirect, url_for, jsonify
 import requests
 from app import db
 from flask_login import current_user, login_required
-from app.models import User
+from app.models import User, Workout
+from random import choice
 
 
 
@@ -70,7 +71,7 @@ def login():
 #         return render_template('gymsearch.html')
 
 # @main.route('/exercises', methods=['GET', 'POST'])
-def get_exercises(exercises):
+def get_exercises():
     url = "https://gym-fit.p.rapidapi.com/exercises/search"
     headers = {
         "X-RapidAPI-Key": "a6cd4199afmshef2cb6b483c6115p14bd76jsn974ac5d50912",
@@ -83,20 +84,28 @@ def get_exercises(exercises):
     # Check if the request was successful
     if response.status_code == 200:
         data = response.json()
-
+        print(data)
         # Extract relevant information from the response
-        exercises = []
-        for exercise in data['exercises']:
-            exercise_data = {
-                'name': exercise['name'],
-                'body_part': exercise['muscle_group'],
-                'instructions': exercise['instructions']
-            }
-            exercises.append(exercise_data)
+        exercises = {}
+        for exercise in data:
+            body_part = exercise['bodyParts']
+            name = exercise['name']
+            if len(body_part) > 1:
+                for parts in body_part:
+                    if parts not in exercises:
+                        exercises[parts] = []
+                    exercises[parts].append(name)
+            if len(body_part) == 1:
+                body_part = body_part[0]
+            
+            # if body_part not in exercises:
+                    
+            #     exercises[body_part]= []
+            # exercises[body_part].append(name)
 
-        return jsonify(exercises)
+        return exercises
     else:
-        return jsonify({'error': 'Failed to retrieve exercise data'})
+        return({'error': 'Failed to retrieve exercise data'})
     
     # @main.route('/exercisesearch', methods=['GET', 'POST'])
     # def ExerciseSearch():
@@ -117,13 +126,14 @@ def ExerciseSearch():
     if request.method == 'POST':
         body_part = request.form.get('body_part')
 
-        query_exercise = exercise.query.filter_by(body_part=body_part).first()
+        query_exercise = Workout.query.filter_by(body_part=body_part).first()
         if query_exercise:
             return render_template('workoutsearch.html', exercise=query_exercise)
         else:
-            exercise = get_exercises(name)
-            new_exercise = exercise(name, body_part, exercise['instructions'])
-            new_exercise.save()
+            exercise = get_exercises()
+            print(f"THIS IS A TEST {exercise[body_part]}")
+            exercise = exercise[body_part]
+            my_excercise = choice(exercise)
             return render_template('workoutsearch.html', exercises=exercise)
     else:
         return render_template('workoutsearch.html')

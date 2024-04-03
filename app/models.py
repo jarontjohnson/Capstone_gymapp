@@ -34,12 +34,12 @@ class User(db.Model, UserMixin):
 #     photo_reference = db.Column(db.String, nullable=False)
 #     gyms = db.relationship('Gym', secondary=gyms, backref="gem", lazy="dynamic")
         
-    class Workout(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        name = db.Column(db.String, nullable=False)
-        body_part = db.Column(db.String, nullable=False)
-        instructions = db.Column(db.String, nullable=False)
-        workouts = db.relationship('Workout',secondary=workouts, backref='workout', lazy='dynamic')
+class Workout(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    body_part = db.Column(db.String, nullable=False)
+    instructions = db.Column(db.String, nullable=False)
+    workouts = db.relationship('Workout',secondary=workouts, backref='workout', lazy='dynamic')
 
     # def __init__(self, name, address, hours, phone, photo_reference):
     #     self.name = name
