@@ -71,15 +71,35 @@ def login():
 #         return render_template('gymsearch.html')
 
 # @main.route('/exercises', methods=['GET', 'POST'])
-def get_exercises():
+    
+def get_instructions(exercise_id):
+    url = f"https://gym-fit.p.rapidapi.com/exercises/exercise/{exercise_id}"
+    headers = {
+        "X-RapidAPI-Key": "a6cd4199afmshef2cb6b483c6115p14bd76jsn974ac5d50912",
+        "X-RapidAPI-Host": "gym-fit.p.rapidapi.com"
+    }
+    
+
+    # Make the API request
+    response = requests.get(url, headers=headers)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        data = response.json()
+        return data["instructions"]
+def get_exercises(body_partsearch):
     url = "https://gym-fit.p.rapidapi.com/exercises/search"
     headers = {
         "X-RapidAPI-Key": "a6cd4199afmshef2cb6b483c6115p14bd76jsn974ac5d50912",
         "X-RapidAPI-Host": "gym-fit.p.rapidapi.com"
     }
+    params = {
+        "bodyPart": body_partsearch
+    }
+    
 
     # Make the API request
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, params=params)
 
     # Check if the request was successful
     if response.status_code == 200:
@@ -90,13 +110,16 @@ def get_exercises():
         for exercise in data:
             body_part = exercise['bodyParts']
             name = exercise['name']
-            if len(body_part) > 1:
-                for parts in body_part:
-                    if parts not in exercises:
-                        exercises[parts] = []
-                    exercises[parts].append(name)
-            if len(body_part) == 1:
-                body_part = body_part[0]
+            id = exercise['id']
+            exercises[name] = body_part
+            
+            # if len(body_part) > 1:
+            #     for parts in body_part:
+            #         if parts not in exercises:
+            #             exercises[parts] = []
+            #         exercises[parts].append(name)
+            # if len(body_part) == 1:
+            #     body_part = body_part[0]
             
             # if body_part not in exercises:
                     
@@ -130,11 +153,10 @@ def ExerciseSearch():
         if query_exercise:
             return render_template('workoutsearch.html', exercise=query_exercise)
         else:
-            exercise = get_exercises()
-            print(f"THIS IS A TEST {exercise[body_part]}")
-            exercise = exercise[body_part]
-            my_excercise = choice(exercise)
-            return render_template('workoutsearch.html', exercises=exercise)
+            exercise = get_exercises(body_part.title())
+            # exercise = exercise[body_part]
+            # my_excercise = choice(exercise)
+            return render_template('workoutsearch.html', workout=exercise)
     else:
         return render_template('workoutsearch.html')
     
@@ -144,8 +166,8 @@ def ExerciseSearch():
 def add_workout(name):
     print(name)
     workout = workout.query.filter_by(name=name).first()
-    if len(current_user.gyms.all()) < 5 and workout not in current_user.gyms.all():
-        current_user.gyms.append(workout)
+    if len(current_user.workouts.all()) < 5 and workout not in current_user.workouts.all():
+        current_user.workouts.append(workout)
         db.session.commit()
         return redirect(url_for('main.workouts'))
 

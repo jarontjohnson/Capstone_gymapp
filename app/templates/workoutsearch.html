@@ -10,26 +10,29 @@
 <form method="POST">
     <div class="mb-3">
       <label for="name" class="form-label">Search a workout by body part</label>
-      <input type="text" class="form-control" id="name" name="name">
+      <input type="text" class="form-control" id="body_part" name="body_part">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
 </div>
   {% if workout %}
+  {%for work in workout%}
   <div class="card" style="width: 18rem;">
-    <img src="{{gym.photo_reference}}" class="card-img-top" alt="...">
+    <img src="app/static/styles/images/the-rock.jpg" class="card-img-top" alt="...">
     <div class="card-body">
-      <h5 class="card-name">{{workout.name}}</h5>
-      <p class="card-text">Workout Info</p>
+      <h4 class="card-text">Workout Info</h4>
+      <h7 class="card-name">{{work}}</h7>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">{{workout.name}}</li>
-        <li class="list-group-item">{{workout.body_part}}</li>
-        <li class="list-group-item">{{workout.instructions}}</li>
+        <!-- <li class="list-group-item">{{work}}</li> -->
+        {%for part in workout[work]%}
+        <li class="list-group-item">{{part}}</li>
+        {%endfor%}
+        <!-- <li class="list-group-item">{{workout.instructions}}</li> -->
       </ul>
-      <a href="{{url_for('main.add_workout', name=workout.name)}}" class="btn btn-primary">Add to Workout Plan</a>
+      <a href="{{url_for('main.workouts', name=work)}}" class="btn btn-primary">Add to Workout Plan</a>
     </div>
   </div>
-
+  {%endfor%}
   {%endif%}
 
 {%endblock%}

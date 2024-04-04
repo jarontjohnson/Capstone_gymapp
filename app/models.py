@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    gyms = db.relationship('Workout', secondary=workouts, backref="users", lazy="dynamic")
+    workouts = db.relationship('Workout', secondary=workouts, backref="users", lazy="dynamic")
     
     def __init__(self, username, email, password):
         self.username = username
