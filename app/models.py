@@ -38,8 +38,7 @@ class Workout(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     body_part = db.Column(db.String, nullable=False)
-    instructions = db.Column(db.String, nullable=False)
-    workouts = db.relationship('Workout',secondary=workouts, backref='workout', lazy='dynamic')
+    # instructions = db.Column(db.String, nullable=False)
 
     # def __init__(self, name, address, hours, phone, photo_reference):
     #     self.name = name
@@ -48,10 +47,10 @@ class Workout(db.Model):
     #     self.phone = phone
     #     self.photo_reference = photo_reference
         
-    def __init__(self, name, body_part, instructions):
+    def __init__(self, name, body_part):
         self.name = name
         self.body_part = body_part
-        self.instructions = instructions
+        # self.instructions = instructions
 
     def save(self):
         db.session.add(self)

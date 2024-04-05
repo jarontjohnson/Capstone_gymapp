@@ -161,25 +161,32 @@ def ExerciseSearch():
         return render_template('workoutsearch.html')
     
     
-@main.route('/add_workout/<name>', methods=['GET', 'POST'])
+@main.route('/add_workout/<name>/<body_part>', methods=['GET', 'POST'])
 @login_required
-def add_workout(name):
+def add_workout(name, body_part):
     print(name)
-    workout = workout.query.filter_by(name=name).first()
-    if len(current_user.workouts.all()) < 5 and workout not in current_user.workouts.all():
-        current_user.workouts.append(workout)
-        db.session.commit()
-        return redirect(url_for('main.workouts'))
+    # workout = Workout.query.filter_by(name=name).first()
+    workout = Workout(name, body_part)
+    if workout:
+        print(workout)
+        if len(current_user.workouts.all()) < 5 and workout not in current_user.workouts.all():
+            current_user.workouts.append(workout)
+            db.session.commit()
+            return redirect(url_for('main.workouts'))
+        # query workout api for this particular workout
+        # create a workout object
+        # save the workout object
+        # append the workout object to the current_user object
 
 @main.route('/workouts')
 @login_required
 def workouts():
     return render_template('workouts.html', workouts=current_user.workouts.all())
 
-@main.route('/remove_workout/<name>', methods=['GET', 'POST'])
+@main.route('/remove_workout/<id>', methods=['GET', 'POST'])
 @login_required
-def remove_workout(name):
-    workout = workout.query.filter_by(name=name).first()
+def remove_workout(id):
+    workout = Workout.query.filter_by(id=id).first()
     if workout in current_user.workouts.all():
         current_user.workouts.remove(workout)
         db.session.commit()

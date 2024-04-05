@@ -18,7 +18,7 @@
   {% if workout %}
   {%for work in workout%}
   <div class="card" style="width: 18rem;">
-    <img src="app/static/styles/images/the-rock.jpg" class="card-img-top" alt="...">
+    <img src="../static/styles/images/the-rock.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h4 class="card-text">Workout Info</h4>
       <h7 class="card-name">{{work}}</h7>
@@ -29,7 +29,7 @@
         {%endfor%}
         <!-- <li class="list-group-item">{{workout.instructions}}</li> -->
       </ul>
-      <a href="{{url_for('main.workouts', name=work)}}" class="btn btn-primary">Add to Workout Plan</a>
+      <a href="{{url_for('main.add_workout', name=work, body_part=work)}}" class="btn btn-primary">Add to Workout Plan</a>
     </div>
   </div>
   {%endfor%}
