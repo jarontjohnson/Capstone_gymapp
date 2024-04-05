@@ -9,16 +9,16 @@
 <div class="flex-container">
 
 </div>
-  {% if workout %}
+  {% if workouts %}
   {% for workout in workouts %}
   <div class="card" style="width: 18rem;">
     <img src="../static/styles/images/the-rock.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h4 class="card-text">Workout Info</h4>
-      <h7 class="card-name">{{work}}</h7>
+      <h7 class="card-name">{{workout.name}}</h7>
       <ul class="list-group list-group-flush">
         <!-- <li class="list-group-item">{{workout.name}}</li> -->
-        {%for part in workout[work]%}
+        {%for part in workout.body_part%}
         <li class="list-group-item">{{part}}</li>
         {%endfor%}
         <!-- <li class="list-group-item">{{workout.instructions}}</li> -->

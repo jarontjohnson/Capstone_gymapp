@@ -164,11 +164,11 @@ def ExerciseSearch():
 @main.route('/add_workout/<name>/<body_part>', methods=['GET', 'POST'])
 @login_required
 def add_workout(name, body_part):
-    print(name)
+    # print(name)
     # workout = Workout.query.filter_by(name=name).first()
     workout = Workout(name, body_part)
     if workout:
-        print(workout)
+        # print(workout)
         if len(current_user.workouts.all()) < 5 and workout not in current_user.workouts.all():
             current_user.workouts.append(workout)
             db.session.commit()
@@ -181,6 +181,7 @@ def add_workout(name, body_part):
 @main.route('/workouts')
 @login_required
 def workouts():
+    print(current_user.workouts.all())
     return render_template('workouts.html', workouts=current_user.workouts.all())
 
 @main.route('/remove_workout/<id>', methods=['GET', 'POST'])
