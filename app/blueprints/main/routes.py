@@ -168,7 +168,7 @@ def add_workout(name, body_part):
     # workout = Workout.query.filter_by(name=name).first()
     workout = Workout(name, body_part)
     if workout:
-        # print(workout)
+        print(workout)
         if len(current_user.workouts.all()) < 5 and workout not in current_user.workouts.all():
             current_user.workouts.append(workout)
             db.session.commit()
